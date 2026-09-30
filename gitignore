@@ -1,0 +1,59 @@
+# Vivado simulation
+*.jou
+*.log
+*.pb
+*.wdb
+*.wcfg
+xsim.dir/
+.Xil/
+xvlog.pb
+xelab.pb
+xsim.pb
+
+# Icarus Verilog
+*.vvp
+*.vcd
+*.fst
+*.lxt
+
+# Verilator
+obj_dir/
+
+# QuestaSim / ModelSim
+work/
+transcript
+vsim.wlf
+*.vstf
+modelsim.ini
+
+# VCS
+csrc/
+simv
+simv.daidir/
+ucli.key
+inter.vpd
+DVEfiles/
+
+# Synopsys DC
+*.svf
+*.mr
+*.pvl
+*.syn
+*.ddc
+
+# General build artifacts
+*.o
+*.a
+*.so
+*.d
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
