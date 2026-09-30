@@ -39,7 +39,7 @@ package udp_parser_pkg;
     // ── CRC-32 (Ethernet, reflected / LSB-first) ────────────────────────────
     localparam logic [31:0] CRC32_POLY    = 32'hEDB88320;
     localparam logic [31:0] CRC32_INIT    = 32'hFFFF_FFFF;
-    localparam logic [31:0] CRC32_RESIDUE = 32'h2144_DF1C;
+    localparam logic [31:0] CRC32_RESIDUE = 32'hDEBB_20E3;
 
     // ── Error flags ─────────────────────────────────────────────────────────
     typedef struct packed {
