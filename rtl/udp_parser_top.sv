@@ -423,7 +423,7 @@ module udp_parser_top
                     // That beat was already consumed, so we replay it from
                     // prev_beat_data.  Stall tready (see always_comb) so no
                     // new beat is consumed this cycle.
-                    if (udp_hdr_done && !fwd_start && !any_hdr_error) begin
+                    if (udp_hdr_done && !fwd_start && !any_hdr_error && ip_hdr_valid) begin
                         fwd_start        <= 1'b1;
                         fwd_start_offset <= udp_payload_start_offset[BW_LOG-1:0];
                         fwd_active       <= 1'b1;

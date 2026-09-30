@@ -58,18 +58,20 @@ module ipv4_parser
     logic [31:0] cksum_chain;
     logic [7:0]  hi_chain;
     logic        hi_pending_chain;
+    logic        hdr_done_chain;     // blocks post-header bytes within same beat
 
     always_comb begin
         cksum_chain      = cksum_accum;
         hi_chain         = cksum_byte_hi;
         hi_pending_chain = cksum_byte_pending;
+        hdr_done_chain   = ip_hdr_done;
 
         for (int i = 0; i < BYTE_WIDTH; i++) begin
             if (in_valid[i]) begin
                 automatic int pos    = byte_offset + i;
                 automatic int ip_pos = pos - IP_START;
 
-                if (ip_pos >= 0 && ip_pos < 40 && !ip_hdr_done) begin // 40 = max IHL*4
+                if (ip_pos >= 0 && ip_pos < 40 && !hdr_done_chain) begin
                     if (ip_pos[0] == 0) begin
                         // Even byte = high byte of 16-bit word
                         hi_chain         = in_bytes[i];
@@ -80,6 +82,11 @@ module ipv4_parser
                         hi_pending_chain = 1'b0;
                     end
                 end
+
+                // Stop accumulating past the last IP header byte
+                if (ihl_captured != 0 && ip_pos >= 0 &&
+                    ip_pos == (ihl_captured * 4 - 1))
+                    hdr_done_chain = 1'b1;
             end
         end
     end
@@ -142,9 +149,10 @@ module ipv4_parser
                     if (ip_pos >= 0 && !ip_hdr_done) begin
                         case (ip_pos)
                             0: begin
-                                ip_version   <= in_bytes[i][7:4];
-                                ip_ihl       <= in_bytes[i][3:0];
-                                ihl_captured <= in_bytes[i][3:0];
+                                ip_version      <= in_bytes[i][7:4];
+                                ip_ihl          <= in_bytes[i][3:0];
+                                ihl_captured    <= in_bytes[i][3:0];
+                                ip_hdr_byte_len <= {12'h0, in_bytes[i][3:0]} << 2;
                             end
                             2: ip_total_length[15:8] <= in_bytes[i];
                             3: ip_total_length[ 7:0] <= in_bytes[i];
